@@ -1,0 +1,234 @@
+<html>
+    <head>
+        <title>My experiment</title>
+        <script src="jsPsych-master/jspsych.js"></script>
+        <script src="jsPsych-master/plugins/jspsych-text.js"></script>
+        <script src="jsPsych-master/plugins/jspsych-single-stim.js"></script>
+        <script src="jsPsych-master/plugins/jspsych-single-audio.js"></script>
+        <link href="jsPsych-master/css/jspsych.css" rel="stylesheet" type="text/css"></link>
+    </head>
+    <body>
+    </body>
+    <script>
+
+/*** Index ***/
+/* RECORD DATA */
+//    - participant ID
+
+/* DETERMINE PARAMETERS */
+//    - condition
+//    - language
+//    - learned words
+
+/* BLOCKS */
+//    - welcome & consent form
+//    - adjust microphone
+//    - learning instructions
+//    - learning presentation
+//    - learning test instructions
+//    - learning test
+//    - listening instructions
+//    - listening
+//    - test instructions
+//    - tests
+//    - survey
+//    - debrief & code
+/*
+
+
+
+/******************************* RECORD DATA ************************************/
+
+    /*
+    Record Participant ID from their MTurk id  ******************
+    *********** what other things do we want to record?
+    */
+
+
+
+/************************** DETERMINE PARAMETERS ******************************/
+/**************************** condition ******************************/
+
+    /*
+    Define which condition the participant is assigned to
+      Josh will give us code to do this so now it's just set arbitrarily
+    */
+
+    // This is changed manually for now
+    var condition = 0; // 0 = nonanchor or 1 = anchor
+
+
+/*************************** language ********************************/
+
+    /*
+    Define which language to use:
+      1. Define two list of 8 words, one in each language (A or B)
+      2. Randomly generate the version via a sample function returns 0 or 1
+      3. Define the operational list of words. If version = 0, wordlist = A, otherwise = B
+      4. Define the other language as "nonwords" for later use
+    */
+
+    //audio files for language A
+    var wordlist_a = [
+      "audio/a1.mp3",
+      "audio/a2.mp3",
+      "audio/a3.mp3",
+      "audio/a4.mp3",
+      "audio/a5.mp3",
+      "audio/a6.mp3",
+      "audio/a7.mp3",
+      "audio/a8.mp3"
+    ];
+
+    //audio files for language B
+    var wordlist_b = [
+      "audio/b1.mp3",
+      "audio/b2.mp3",
+      "audio/b3.mp3",
+      "audio/b4.mp3",
+      "audio/b5.mp3",
+      "audio/b6.mp3",
+      "audio/b7.mp3",
+      "audio/b8.mp3"
+    ];
+
+    // randomly select which language to use
+    var version = jsPsych.randomization.sample([0,1], 1);
+
+    // depending on the version, define the wordlist and the nonwordlist
+    if (version = 0){
+      var wordlist = wordlist_a;
+      var nonwordlist = wordlist_b;
+    } else if (version = 1){
+      var wordlist = wordlist_b;
+      var nonwordlist = wordlist_a;
+    };
+
+/************************** learned words ******************************/
+
+    /*
+    Defining the words as anchor words or nonanchor words
+      1. Randomly select two numbers out of 8
+      2. If condition = 0, use these two numbers to determine which nonwords are used in learning
+      3. If condition = 1, create an array of words with properties indicating their file name
+          and whether they are anchor words or not (default = not anchor word), and
+          then use these two numbers to determine which words are used in learning. Change
+          their "anchor" property to "true"
+    */
+
+    // randomly select two numbers out of eight
+    var which_learned = jsPsych.randomization.sample([0,1,2,3,4,5,6,7], 2);
+
+    // determines what the learned words are depending on the condition
+    if (condition == 0) {
+
+      // for the nonanchor condition, the learned words are two nonwords
+      // randomly selected from the list of nonwords
+      var learned = [
+        nonwordlist[which_learned[0]],
+        nonwordlist[which_learned[1]]
+      ];
+
+    } else if (condition == 1){
+      // for the anchor condition, the learned words are two of the eight words
+      // their identity are recorded in the property .anchor (true for anchor words)
+
+      var words = [
+        {file: wordlist[0], anchor: false},
+        {file: wordlist[1], anchor: false},
+        {file: wordlist[2], anchor: false},
+        {file: wordlist[3], anchor: false},
+        {file: wordlist[4], anchor: false},
+        {file: wordlist[5], anchor: false},
+        {file: wordlist[6], anchor: false},
+        {file: wordlist[7], anchor: false}
+      ];
+
+      for(var i=0; i < which_anchors.length; i++){
+        words[which_learned[i]].anchor = true;
+      };
+
+      var learned = [
+        words[which_learned[0]].file,
+        words[which_learned[1]].file
+      ];
+    };
+
+/******************************* THE BLOCKS ************************************/
+
+
+      /* define consent form block */
+      var consent_block = {
+        type: "text",
+        cont_key:["spacebar"],
+        text: "<p>Welcome to the experiment!</p><p> (insert consent form here)</p>" +
+              "<p>If you agree with these conditions, pressing the " +
+              "<strong>spacebar</strong> to begin the experiment. </p>" +
+              "<p>If you do not wish to partcipate in this study, you can exit now. </p>"
+        };
+
+      /* define adjust volume block*/    /*practice for single-audio*/ V
+      /********* does it have to be in .mp3?*/ V
+
+      var adjust_block = {
+        type: "single-audio",
+        stimulus: words[which_anchors[0]].file,
+        choices: ["k"],
+        prompt: "<p>A test audio will be played repeatedly during this screen. </p>" +
+                "<p>Please check whether your computer is playing sound correctly, " +
+                "and adjust the volume so you can hear the sentence clearly. </p>" +
+                "<p>Press <strong>spacebar</strong> to proceed.</p>"
+      };
+
+      /* define learning instructions block */ /***** just text */ V
+      /****** how to assign different stimuli for different conditions? just ifelse?*/
+      /****** how to randomly select 2 from 8? */ V
+      /****** can I store these two stimuli to use in a later block? Do I save them as objects? */
+
+      /* define learning block */ /* single-audio and
+      put img inside the prompt; use "trial_ends_after_audio" = T*/
+      /* for each audio, use a different block*/
+
+
+      /* define learning test block */
+      /* how do I keep track of how many times they did wrong and go to different slides
+      depending on the results? *use loop? */
+
+      /* define listening instructions block */
+
+      /* define listening block */ /* just single-stim? */
+
+      /* define testing instructions block */
+
+      /* define testing block */ /* can make it just single-stim? */
+
+      /* define survey block */ /* survey multiple choice? */
+
+      /* define debrief block */ /*text, make sure mouse is enabled*/
+
+
+
+
+      /* determine: (and where to do this?)
+      condition: anchor, non anchor
+      language: A, B
+      participant.id : (how to link this to turk? I know there's some code)
+
+
+      */
+
+
+      var timeline = [];
+      timeline.push(consent_block);
+      timeline.push(adjust_block)
+
+      /* start the experiment */
+      jsPsych.init({
+        timeline: timeline,
+        on_finish: function() {
+          jsPsych.data.displayData();
+        }
+      });
+    </script>
+    </html>
+    </html>
